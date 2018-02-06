@@ -19,11 +19,11 @@
 	- Query에는 DB에 바로 사용할 수 있도록 where절의 query를 출력합니다.
 - 'Before' 버튼은 이 전의 값들로 원상복귀 시켜줍니다.
 
-### 2.2 
+### 2.2 실행 방법
 - #### 처음 화면
 ![main](./screenshot/main.PNG)
 
-- #### 검색 화면
+- #### 검색 화면 (ex; 용도에서 '업무'를 포함한 List와 층수가 20 미만 되는 List의 교집합한 결과입니다.)
 ![main](./screenshot/execute.PNG)
 
 ### 2.2 주요 함수 / 클래스
