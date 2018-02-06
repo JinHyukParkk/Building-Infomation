@@ -30,7 +30,7 @@ namespace WpfApp1
         public List<Info> infos = new List<Info>();
         public LinkedList<Data> before = new LinkedList<Data>();
         public Data now;
-        public int first_Check = 0;
+        public int first_Check = 0; // 0일 때 아무 검색을 안했을 때 
             
         public MainWindow()
         {
@@ -183,15 +183,6 @@ namespace WpfApp1
             string resp = htmlRequest(key);
             HtmlParseAction(resp);
         }
-
-        private void Query_Search(object sender, RoutedEventArgs e)
-        {
-            List<Info> searchInfos = new List<Info>();
-            string query = this.searchQuery.Text;
-            searchInfos = infos.Where(x => Int32.Parse(x.buildingFloor) < 20 && x.buildingUsing.Contains("업무")).ToList();
-            InfoListView.ItemsSource = searchInfos;
-
-        }
         // 값 비교 함수
         private Boolean compare_value(int v1, int v2, string cal)
         {
@@ -204,16 +195,21 @@ namespace WpfApp1
             }
         }
         // 찾아주는 함수.
-        private Data search_class(Data bef, string txt, string searchValue, string cal)
+        private Data search_class(Data bef, string txt, string searchValue, string cal, string oper)
         {
             List<Info> searchInfos = new List<Info>();
             List<Info> b = bef.link;
             StringBuilder query = new StringBuilder("");
             query.Append(bef.str);
-            if(first_Check== 0)
+            if (first_Check == 0)
                 first_Check = 1;
             else
-                query.Append(" && ");
+            {
+                if (oper.Equals("add"))
+                    query.Append(" && ");
+                else
+                    query.Append(" || ");
+            }
             try
             {
                 if (txt.Equals("용도"))
@@ -287,17 +283,35 @@ namespace WpfApp1
             string searchValue = this.searchValue.Text;
 
             before.AddFirst(now);
-            now = search_class(before.First.Value,txt, searchValue, cal);
+            now = search_class(before.First.Value,txt, searchValue, cal,"add");
 
             //List 업데이트         
             this.searchQuery.Text = now.str;
             InfoListView.ItemsSource = now.link;
             this.searchValue.Text = "";
-
+            
         }
         private void Join_Search(object sender, RoutedEventArgs e)
         {
+            string txt = comboBox1.SelectedItem as String;
+            string cal = comboBox2.SelectedItem as String;
+            string searchValue = this.searchValue.Text;
 
+            before.AddFirst(now);
+            if (first_Check == 0)
+            {
+                now = search_class(before.First.Value, txt, searchValue, cal, "join");
+            }
+            else
+            {
+                Data addNow = search_class(new Data(infos,before.First.Value.str), txt, searchValue, cal, "join");
+                addNow.link.AddRange(now.link);
+                addNow.link = addNow.link.Distinct().ToList();
+                now = addNow;
+            }
+            this.searchQuery.Text = now.str;
+            InfoListView.ItemsSource = now.link;
+            this.searchValue.Text = "";
         }
         //Before 상태로 되돌리는 함수
         private void Button_Before(object sender, RoutedEventArgs e)
@@ -317,8 +331,7 @@ namespace WpfApp1
             
         }
 
-
-
+        // comboBox1 선택 시 
         private void comboBox1_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             string txt = comboBox1.SelectedItem as String;
@@ -327,7 +340,7 @@ namespace WpfApp1
             else
                 comboBox2.IsEnabled = true;
         }
-
+        //uri 형식
         private void TextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             Console.Write("URL 확인");
