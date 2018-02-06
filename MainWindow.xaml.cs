@@ -7,6 +7,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Xml.Linq;
+using System.Linq;
+using System.Linq.Dynamic;
 
 namespace WpfApp1
 {
@@ -15,9 +17,21 @@ namespace WpfApp1
     /// </summary>
     public partial class MainWindow : Window
     {
-
+        public class Data
+        {
+            public List<Info> link { get; set; }
+            public string str { get; set; }
+            public Data(List<Info> link, string str)
+            {
+                this.link = link;
+                this.str = str;
+            }
+        }
         public List<Info> infos = new List<Info>();
-
+        public LinkedList<Data> before = new LinkedList<Data>();
+        public Data now;
+        public int first_Check = 0;
+            
         public MainWindow()
         {
             InitializeComponent();
@@ -25,8 +39,11 @@ namespace WpfApp1
             prepare_comboBox();
 
             test_init();
+
+            now = new Data(infos,"");
         }
 
+        //초기화
         private void test_init()
         {
             HtmlParseAction(htmlRequest("B00100000000O68N3"));
@@ -43,6 +60,7 @@ namespace WpfApp1
             HtmlParseAction(htmlRequest("B00100000000OJK27"));
             HtmlParseAction(htmlRequest("B00100000000RCX0E"));
         }
+        //콤보박스 
         private void prepare_comboBox()
         {
             comboBox1.Items.Add("용도");
@@ -56,13 +74,15 @@ namespace WpfApp1
             comboBox1.Items.Add("대지면적");
             comboBox1.Items.Add("구조");
             comboBox1.Items.Add("준공일자");
+            comboBox2.Items.Add("<");
+            comboBox2.Items.Add(">");
         }
-
+        //요청 url 생성
         private Uri CreateUrl(string key)
         {
             return new Uri(String.Format("http://map.vworld.kr/v4map_po_buildMetaInfov15.do?geoidn={0}", key));
         }
-
+        //요청 후 html 받아오기
         private string htmlRequest(string key)
         {
             Uri url = CreateUrl(key);
@@ -102,7 +122,7 @@ namespace WpfApp1
             return sb.ToString();
 
         }
- 
+        // html parse
         private void HtmlParseAction(String html)
         {
             try
@@ -150,6 +170,7 @@ namespace WpfApp1
             
             // XDocument buildingInformationXml = XDocument.Parse(sb.ToString());
         }
+        // 건물정보 추가
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Stopwatch watch = new Stopwatch();
@@ -162,128 +183,151 @@ namespace WpfApp1
             string resp = htmlRequest(key);
             HtmlParseAction(resp);
         }
-        private void Button_Search(object sender, RoutedEventArgs e)
+
+        private void Query_Search(object sender, RoutedEventArgs e)
         {
+            List<Info> searchInfos = new List<Info>();
+            string query = this.searchQuery.Text;
+            searchInfos = infos.Where(x => Int32.Parse(x.buildingFloor) < 20 && x.buildingUsing.Contains("업무")).ToList();
+            InfoListView.ItemsSource = searchInfos;
+
+        }
+        // 값 비교 함수
+        private Boolean compare_value(int v1, int v2, string cal)
+        {
+            if (cal.Equals("<"))
+            {
+                return v1 < v2;
+            }else
+            {
+                return v1 > v2;
+            }
+        }
+        // 찾아주는 함수.
+        private Data search_class(Data bef, string txt, string searchValue, string cal)
+        {
+            List<Info> searchInfos = new List<Info>();
+            List<Info> b = bef.link;
+            StringBuilder query = new StringBuilder("");
+            query.Append(bef.str);
+            if(first_Check== 0)
+                first_Check = 1;
+            else
+                query.Append(" && ");
             try
             {
-                string txt = comboBox1.SelectedItem as String;
-                string searchValue = this.searchValue.Text;
-                Console.WriteLine(txt);
-                List<Info> searchInfos = new List<Info>();
-
                 if (txt.Equals("용도"))
                 {
-                    foreach (Info i in infos)
-                    {
-                        if (i.buildingUsing.Contains(searchValue)) {
-                            searchInfos.Add(i);
-                        }
-                    }
-                }else if (txt.Equals("구조")) {
-                    foreach (Info i in infos)
-                    {
-                        if (i.structure.Contains(searchValue))
-                        {
-                            searchInfos.Add(i);
-                        }
-                    }
-                }else if (txt.Equals("층수"))
+                    searchInfos = b.Where(x => x.buildingUsing.Contains(searchValue)).ToList();
+                    query.Append("buildingUsing LIKE \"%" + searchValue + "%\"");
+                }
+                else if (txt.Equals("구조"))
                 {
-                    foreach (Info i in infos)
-                    {
-                        if (!(i.buildingFloor.Equals("-")) && Int32.Parse(i.buildingFloor) < Int32.Parse(searchValue))
-                        {
-                            searchInfos.Add(i);
-                        }
-                    }
-                }else if (txt.Equals("지하"))
+                    searchInfos = b.Where(x => x.structure.Contains(searchValue)).ToList();
+                    query.Append("structure LIKE \"%" + searchValue + "%\"");
+                }
+                else if (txt.Equals("층수"))
                 {
-                    foreach (Info i in infos)
-                    {
-                        if (!(i.buildingUnderFloor.Equals("-")) && Int32.Parse(i.buildingUnderFloor) < Int32.Parse(searchValue))
-                        {
-                            searchInfos.Add(i);
-                        }
-                    }
-                }else if (txt.Equals("건물면적"))
+                    searchInfos = b.Where(x => compare_value(Int32.Parse(x.buildingFloor), Int32.Parse(searchValue),cal)).ToList();
+                    query.Append("buildingFloor " + cal+" "+ searchValue);
+                }
+                else if (txt.Equals("지하"))
                 {
-                    foreach (Info i in infos)
-                    {
-                        if (!(i.buildingArea.Equals("-")) && Int32.Parse(i.buildingArea) < Int32.Parse(searchValue))
-                        {
-                            searchInfos.Add(i);
-                        }
-                    }
-                }else if (txt.Equals("건물높이"))
+                    searchInfos = b.Where(x => compare_value(Int32.Parse(x.buildingUnderFloor),Int32.Parse(searchValue),cal)).ToList();
+                    query.Append("buildingUnderFloor " + cal + " " + searchValue);
+                }
+                else if (txt.Equals("건물면적"))
                 {
-                    foreach (Info i in infos)
-                    {
-                        if (!(i.buildingHeight.Equals("-")) && Int32.Parse(i.buildingHeight) < Int32.Parse(searchValue))
-                        {
-                            searchInfos.Add(i);
-                        }
-                    }
-                }else if (txt.Equals("용적률"))
+                    searchInfos = b.Where(x => compare_value(Int32.Parse(x.buildingArea),Int32.Parse(searchValue),cal)).ToList();
+                    query.Append("buildingArea " + cal + " " + searchValue);
+                }
+                else if (txt.Equals("건물높이"))
                 {
-                    foreach (Info i in infos)
-                    {
-                        if (!(i.areaRatio.Equals("-")) && Int32.Parse(i.areaRatio) < Int32.Parse(searchValue))
-                        {
-                            searchInfos.Add(i);
-                        }
-                    }
-                }else if (txt.Equals("건폐율"))
+                    searchInfos = b.Where(x => compare_value(Int32.Parse(x.buildingHeight),Int32.Parse(searchValue),cal)).ToList();
+                    query.Append("buildingHeight " + cal + " " + searchValue);
+                }
+                else if (txt.Equals("용적률"))
                 {
-                    foreach (Info i in infos)
-                    {
-                        if (!(i.coverrageRatiod.Equals("-")) && Int32.Parse(i.coverrageRatiod) < Int32.Parse(searchValue))
-                        {
-                            searchInfos.Add(i);
-                        }
-                    }
-                }else if (txt.Equals("연면적"))
+                    searchInfos = b.Where(x => compare_value(Int32.Parse(x.areaRatio),Int32.Parse(searchValue),cal)).ToList();
+                    query.Append("areaRatio " + cal + " " + searchValue);
+                }
+                else if (txt.Equals("건폐율"))
                 {
-                    foreach (Info i in infos)
-                    {
-                        if (!(i.grossArea.Equals("-")) && Int32.Parse(i.grossArea) < Int32.Parse(searchValue))
-                        {
-                            searchInfos.Add(i);
-                        }
-                    }
-                }else if (txt.Equals("대지면적"))
+                    searchInfos = b.Where(x => compare_value(Int32.Parse(x.coverrageRatiod),Int32.Parse(searchValue),cal)).ToList();
+                    query.Append("coverrageRatiod " + cal + " " + searchValue);
+                }
+                else if (txt.Equals("연면적"))
                 {
-                    foreach (Info i in infos)
-                    {
-                        if (!(i.landArea.Equals("-")) && Int32.Parse(i.landArea) < Int32.Parse(searchValue))
-                        {
-                            searchInfos.Add(i);
-                        }
-                    }
-                }else if (txt.Equals("준공일자"))
+                    searchInfos = b.Where(x => compare_value(Int32.Parse(x.grossArea),Int32.Parse(searchValue),cal)).ToList();
+                    query.Append("grossArea " + cal + " " + searchValue);
+                }
+                else if (txt.Equals("대지면적"))
+                {
+                    searchInfos = b.Where(x => compare_value(Int32.Parse(x.landArea),Int32.Parse(searchValue),cal)).ToList();
+                    query.Append("landArea " + cal + " " + searchValue);
+                }
+                else if (txt.Equals("준공일자"))
                 {
                     string year = searchValue.Split('-')[0];
                     string month = searchValue.Split('-')[1];
                     string day = searchValue.Split('-')[2];
                 }
-                //List 업데이트
-                InfoListView.ItemsSource = searchInfos;
-            }catch(Exception e3)
+            }
+            catch (Exception e3)
             {
                 Console.WriteLine(e3.Message.ToString());
             }
+            return new Data(searchInfos,query.ToString());
         }
-        private void Button_Restore(object sender, RoutedEventArgs e)
+        // 조건 추가 함수
+        private void Add_Search(object sender, RoutedEventArgs e)
         {
-            InfoListView.ItemsSource = infos;
-            InfoListView.Items.Refresh();
+            string txt = comboBox1.SelectedItem as String;
+            string cal = comboBox2.SelectedItem as String;
+            string searchValue = this.searchValue.Text;
+
+            before.AddFirst(now);
+            now = search_class(before.First.Value,txt, searchValue, cal);
+
+            //List 업데이트         
+            this.searchQuery.Text = now.str;
+            InfoListView.ItemsSource = now.link;
+            this.searchValue.Text = "";
+
+        }
+        private void Join_Search(object sender, RoutedEventArgs e)
+        {
+
+        }
+        //Before 상태로 되돌리는 함수
+        private void Button_Before(object sender, RoutedEventArgs e)
+        {
+            if (before.Count != 0)
+            {
+                now = before.First.Value;
+                before.RemoveFirst();
+                InfoListView.ItemsSource = now.link;
+                this.searchQuery.Text = now.str;
+                InfoListView.Items.Refresh();
+            }
+            if(before.Count == 0)
+            {
+                first_Check = 0;
+            }
+            
         }
 
 
-        private void InfoListView_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+
+        private void comboBox1_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-           
+            string txt = comboBox1.SelectedItem as String;
+            if (txt.Equals("용도") || txt.Equals("구조"))
+                comboBox2.IsEnabled = false;
+            else
+                comboBox2.IsEnabled = true;
         }
-        
+
         private void TextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             Console.Write("URL 확인");
