@@ -1,47 +1,47 @@
-# Vworld¿¡¼­ 3D °Ç¹° ÅØ½ºÃÄµéÀÇ Á¤º¸¸¦ °¡Á®¿À´Â ¼Ò½ºÀÔ´Ï´Ù.
+# Vworld Mapì˜ 3D ê±´ë¬¼ í…ìŠ¤ì³ ì •ë³´ ë¦¬ìŠ¤íŠ¸
 
-## 1. °³¿ä
+## 1. ê°œìš”
 -------------
- °Ç¹°À» Å¬¸¯ÇÏ°Ô µÇ¸é ¾Æ·¡¿Í °°ÀÌ °Ç¹°ÀÇ Á¤º¸°¡ ³ªÅ¸³³´Ï´Ù. À¥ µð¹ö±ë ÅøÀÎ ÇÇµé·¯¸¦ ÅëÇØ HTTP ¿äÃ»½Ã GET ¹æ½ÄÀ¸·Î UFID¸¦ ³Ñ°ÜÁÖ¾î Á¤º¸µéÀº ÀÀ´ä¹Þ´Â °ÍÀ» È®ÀÎÇÏ¿´½À´Ï´Ù. ÇØ´ç ¼Ò½º´Â 20°³ÀÇ °Ç¹° Á¤º¸¸¦ °¡Á®¿Í¼­ Á¶°Ç¿¡ µû¶ó ÇØ´çµÇ´Â °Ç¹°µéÀ» ¸®½ºÆ®¿¡ º¸¿©ÁÖ´Â ¼Ò½ºÀÔ´Ï´Ù. 
+ ê±´ë¬¼ì„ í´ë¦­í•˜ê²Œ ë˜ë©´ ì•„ëž˜ ê·¸ë¦¼ê³¼ ê°™ì´ ê±´ë¬¼ì˜ ì •ë³´ê°€ ë‚˜íƒ€ë‚©ë‹ˆë‹¤. UFIDë¥¼ í†µí•´ ê±´ë¬¼ë“¤ì˜ ì •ë³´ë¥¼ ê°€ì ¸ì™€ ë¦¬ìŠ¤íŠ¸í™” í•©ë‹ˆë‹¤. ë˜í•œ ì¡°ê±´ì— ë”°ë¥¸ Queryë¥¼ ìƒì„±í•´ì¤ë‹ˆë‹¤. í•´ë‹¹ ì†ŒìŠ¤ëŠ” 20ê°œì˜ ê±´ë¬¼ ì •ë³´ë¥¼ ê°€ì ¸ì™€ì„œ ì¡°ê±´ì— ë”°ë¼ í•´ë‹¹ë˜ëŠ” ê±´ë¬¼ë“¤ì„ ë¦¬ìŠ¤íŠ¸ì— ë³´ì—¬ì£¼ëŠ” ì†ŒìŠ¤ìž…ë‹ˆë‹¤. 
  
-#### Vworld °Ç¹° ¼±ÅÃ È­¸é 
+#### Vworld ê±´ë¬¼ ì„ íƒ í™”ë©´ 
  ![main](./screenshot/BuildingInfo.PNG)
 
-## 2. »ç¿ë¹ý
+## 2. ì‚¬ìš©ë²•
 -------------
-##### clone ÇØ¼­ ¹Ù·Î »ç¿ëÇÏ½Ã¸é µË´Ï´Ù.
+##### clone í•´ì„œ ë°”ë¡œ ì‚¬ìš©í•˜ì‹œë©´ ë©ë‹ˆë‹¤.
 
-### 2.1 ±â´É
-- 'Key' ¸¦ Àû´Â ÅØ½ºÆ®¹Ú½º¿¡ UFID¸¦ Àû¾îÁÖ½Ã°í, [Bring it] ¹öÆ°À» ´©¸£°Ô µÇ¸é ÇØ´ç UFID¸¦ °¡Áø °Ç¹°ÀÇ Á¤º¸°¡ ¸®½ºÆ®¿¡ Ãß°¡µË´Ï´Ù.
--  ¿À¸¥ÂÊ »ó´Ü¿¡ 'Attr' ¶ó´Â ÄÞº¸¹Ú½º¿¡¼­ Ã£À¸½Ç ¼Ó¼º °ªÀ» ¼±ÅÃÇÏ½Ã°í, ¿· ºóÄ­¿¡ Ã£À¸½Ç °ªÀ» ÀÔ·ÂÇÑ ´ÙÀ½ Search ¹öÆ°À» ´©¸£½Ã¸é µË´Ï´Ù.
-	- ±âÁØ °ªÀÌ ¼öÄ¡ÀÎ °æ¿ì ¹Ì¸¸, ÃÊ°ú °ªÀ» Ã£À» Áö ¼±ÅÃÇÏ°í, ±âÁØ °ªÀ» Àû½À´Ï´Ù.  
-	- ±âÁØ °ªÀÌ ¹®ÀÚÀÏ °æ¿ì ½áÁØ ¹®ÀÚ°¡ Æ÷ÇÔµÈ °ªµéÀ» Ã£¾Æ³À´Ï´Ù.
-	- [Add]´Â 'AND' ¿¬»êÀ» °¡¸®Å°°í, [join]Àº 'OR' ¿¬»êÀ» °¡¸®Åµ´Ï´Ù.
-	- Query¿¡´Â DB¿¡ ¹Ù·Î »ç¿ëÇÒ ¼ö ÀÖµµ·Ï whereÀýÀÇ query¸¦ Ãâ·ÂÇÕ´Ï´Ù.
-- 'Before' ¹öÆ°Àº ÀÌ ÀüÀÇ °ªµé·Î ¿ø»óº¹±Í ½ÃÄÑÁÝ´Ï´Ù.
+### 2.1 ê¸°ëŠ¥
+- 'Key' ë¥¼ ì ëŠ” í…ìŠ¤íŠ¸ë°•ìŠ¤ì— UFIDë¥¼ ì ì–´ì£¼ì‹œê³ , [Bring it] ë²„íŠ¼ì„ ëˆ„ë¥´ê²Œ ë˜ë©´ í•´ë‹¹ UFIDë¥¼ ê°€ì§„ ê±´ë¬¼ì˜ ì •ë³´ê°€ ë¦¬ìŠ¤íŠ¸ì— ì¶”ê°€ë©ë‹ˆë‹¤.
+-  ì˜¤ë¥¸ìª½ ìƒë‹¨ì— 'Attr' ë¼ëŠ” ì½¤ë³´ë°•ìŠ¤ì—ì„œ ì°¾ìœ¼ì‹¤ ì†ì„± ê°’ì„ ì„ íƒí•˜ì‹œê³ , ì˜† ë¹ˆì¹¸ì— ì°¾ìœ¼ì‹¤ ê°’ì„ ìž…ë ¥í•œ ë‹¤ìŒ Search ë²„íŠ¼ì„ ëˆ„ë¥´ì‹œë©´ ë©ë‹ˆë‹¤.
+	- ê¸°ì¤€ ê°’ì´ ìˆ˜ì¹˜ì¸ ê²½ìš° ë¯¸ë§Œ, ì´ˆê³¼ ê°’ì„ ì°¾ì„ ì§€ ì„ íƒí•˜ê³ , ê¸°ì¤€ ê°’ì„ ì ìŠµë‹ˆë‹¤.  
+	- ê¸°ì¤€ ê°’ì´ ë¬¸ìžì¼ ê²½ìš° ì¨ì¤€ ë¬¸ìžê°€ í¬í•¨ëœ ê°’ë“¤ì„ ì°¾ì•„ëƒ…ë‹ˆë‹¤.
+	- [Add]ëŠ” 'AND' ì—°ì‚°ì„ ê°€ë¦¬í‚¤ê³ , [join]ì€ 'OR' ì—°ì‚°ì„ ê°€ë¦¬í‚µë‹ˆë‹¤.
+	- Queryì—ëŠ” DBì— ë°”ë¡œ ì‚¬ìš©í•  ìˆ˜ ìžˆë„ë¡ whereì ˆì˜ queryë¥¼ ì¶œë ¥í•©ë‹ˆë‹¤.
+- 'Before' ë²„íŠ¼ì€ ì´ ì „ì˜ ê°’ë“¤ë¡œ ì›ìƒë³µê·€ ì‹œì¼œì¤ë‹ˆë‹¤.
 
-### 2.2 ½ÇÇà ¹æ¹ý
-- #### Ã³À½ È­¸é
+### 2.2 ì‹¤í–‰ ë°©ë²•
+- #### ì²˜ìŒ í™”ë©´
 ![main](./screenshot/main.PNG)
 
-- #### °Ë»ö È­¸é (ex; ¿ëµµ¿¡¼­ '¾÷¹«'¸¦ Æ÷ÇÔÇÑ List¿Í Ãþ¼ö°¡ 20 ¹Ì¸¸ µÇ´Â ListÀÇ ±³ÁýÇÕÇÑ °á°úÀÔ´Ï´Ù.)
+- #### ê²€ìƒ‰ í™”ë©´ (ex; ìš©ë„ì—ì„œ 'ì—…ë¬´'ë¥¼ í¬í•¨í•œ Listì™€ ì¸µìˆ˜ê°€ 20 ë¯¸ë§Œ ë˜ëŠ” Listì˜ êµì§‘í•©í•œ ê²°ê³¼ìž…ë‹ˆë‹¤.)
 ![main](./screenshot/execute.PNG)
 
-### 2.2 ÁÖ¿ä ÇÔ¼ö / Å¬·¡½º
+### 2.2 ì£¼ìš” í•¨ìˆ˜ / í´ëž˜ìŠ¤
 - #### htmlRequest(string ufid)
 ```
-htmlRequest([UFID])   // UFID¸¦ ³Ñ°ÜÁÖ¾î HTML Body¸¦ response·Î ¹Þ¾Æ ¿É´Ï´Ù.
+htmlRequest([UFID])   // UFIDë¥¼ ë„˜ê²¨ì£¼ì–´ HTML Bodyë¥¼ responseë¡œ ë°›ì•„ ì˜µë‹ˆë‹¤.
 ```
 - #### HtmlParseAction(string html)
 ```
-htmlRequest([HTML])   // HTML Body¸¦ ¹Þ¾Æ parsing ÇÏ¿© »ç¿ëÇÒ Á¤º¸¸¦ ¾ò°í, ¸®½ºÆ®¿¡ Ãß°¡ÇÕ´Ï´Ù.
+htmlRequest([HTML])   // HTML Bodyë¥¼ ë°›ì•„ parsing í•˜ì—¬ ì‚¬ìš©í•  ì •ë³´ë¥¼ ì–»ê³ , ë¦¬ìŠ¤íŠ¸ì— ì¶”ê°€í•©ë‹ˆë‹¤.
 ```
-- #### Data Å¬·¡½º
+- #### Data í´ëž˜ìŠ¤
 ```
  public class Data
         {
-            public List<Info> link { get; set; }	// º¸¿©Áö´Â List Á¤º¸µé
-            public string str { get; set; }			// ÇØ´ç List µéÀ» °Ë»öÇÑ Äõ¸®
+            public List<Info> link { get; set; }	// ë³´ì—¬ì§€ëŠ” List ì •ë³´ë“¤
+            public string str { get; set; }			// í•´ë‹¹ List ë“¤ì„ ê²€ìƒ‰í•œ ì¿¼ë¦¬
             public Data(List<Info> link, string str)
             {
                 this.link = link;
